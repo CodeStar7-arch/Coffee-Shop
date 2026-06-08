@@ -13,7 +13,10 @@ const presets = {
 
 export default function ScrollReveal({
     children,
-    animation = 
+    animation = "fadeUp",
+    delay = 0,
+    duration = 0.6,
+    once = true
 })
 
 const ref = useRef(null);

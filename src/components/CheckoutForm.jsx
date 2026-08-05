@@ -61,8 +61,14 @@ export default function CheckoutForm({ onSuccess, onCancel }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-6 max-h-screen overflow-y-auto">
+    <div
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4"
+      style={{ zIndex: 9000 }}
+    >
+      <div
+        className="relative bg-white rounded-lg shadow-lg max-w-md w-full p-6 max-h-screen overflow-y-auto"
+        style={{ zIndex: 9001 }}
+      >
         <h2 className="text-2xl font-bold mb-4">Checkout</h2>
 
         {error && (

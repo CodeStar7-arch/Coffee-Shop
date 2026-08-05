@@ -33,6 +33,11 @@ export default function NavBar({ onNavigate = () => {} }) {
     onNavigate("cart");
   };
 
+  const handleNavigateHome = () => {
+    onNavigate("home");
+    closeMenu();
+  };
+
   return (
     <motion.header
       className={`navbar ${
@@ -59,13 +64,31 @@ export default function NavBar({ onNavigate = () => {} }) {
         {/* Desktop Navigation */}
 
         <nav className="nav-links hidden items-center gap-10 md:flex">
-          <a href="#home">Home</a>
+          <button type="button" onClick={handleNavigateHome}>Home</button>
 
-          <a href="#shop">Shop Coffee</a>
+          <button type="button" onClick={() => onNavigate("home")}>Shop Coffee</button>
 
-          <a href="#about">Our Story</a>
+          <button type="button" onClick={() => {
+            onNavigate("home");
+            setTimeout(() => {
+              document.getElementById("about")?.scrollIntoView({
+                behavior: "smooth",
+              });
+            }, 50);
+          }}>
+            Our Story
+          </button>
 
-          <a href="#contact">Contact</a>
+          <button type="button" onClick={() => {
+            onNavigate("home");
+            setTimeout(() => {
+              document.getElementById("contact")?.scrollIntoView({
+                behavior: "smooth",
+              });
+            }, 50);
+          }}>
+            Contact
+          </button>
         </nav>
 
         {/* Desktop Right Side */}
@@ -78,12 +101,20 @@ export default function NavBar({ onNavigate = () => {} }) {
 
           <button
             onClick={handleCartClick}
-            className="relative transition-transform hover:scale-110"
+            className={`relative transition-transform hover:scale-110 ${
+              totalItems > 0
+                ? "ring-2 ring-amber-300 shadow-[0_0_20px_rgba(251,191,36,0.25)]"
+                : ""
+            }`}
             aria-label="Shopping Cart"
           >
             <FaShoppingCart
               size={24}
-              className="text-[var(--cream)]"
+              className={`transition ${
+                totalItems > 0
+                  ? "text-[var(--amber-dark)]"
+                  : "text-[var(--cream)]"
+              }`}
             />
 
             {totalItems > 0 && (
@@ -102,6 +133,7 @@ export default function NavBar({ onNavigate = () => {} }) {
                   text-xs
                   font-bold
                   text-black
+                  animate-pulse
                 "
               >
                 {totalItems}
@@ -112,6 +144,14 @@ export default function NavBar({ onNavigate = () => {} }) {
           <Button
             variant="accent"
             size="sm"
+            onClick={() => {
+              onNavigate("home");
+              setTimeout(() => {
+                document.getElementById("shop")?.scrollIntoView({
+                  behavior: "smooth",
+                });
+              }, 50);
+            }}
           >
             Order Now ☕
           </Button>
@@ -177,33 +217,60 @@ export default function NavBar({ onNavigate = () => {} }) {
             }}
           >
             <nav className="flex flex-col gap-5 px-6 pb-6 pt-2">
-              <a
-                href="#home"
-                onClick={closeMenu}
+              <button
+                type="button"
+                onClick={() => {
+                  closeMenu();
+                  onNavigate("home");
+                }}
               >
                 Home
-              </a>
+              </button>
 
-              <a
-                href="#shop"
-                onClick={closeMenu}
+              <button
+                type="button"
+                onClick={() => {
+                  closeMenu();
+                  onNavigate("home");
+                  setTimeout(() => {
+                    document.getElementById("shop")?.scrollIntoView({
+                      behavior: "smooth",
+                    });
+                  }, 50);
+                }}
               >
                 Shop Coffee
-              </a>
+              </button>
 
-              <a
-                href="#about"
-                onClick={closeMenu}
+              <button
+                type="button"
+                onClick={() => {
+                  closeMenu();
+                  onNavigate("home");
+                  setTimeout(() => {
+                    document.getElementById("about")?.scrollIntoView({
+                      behavior: "smooth",
+                    });
+                  }, 50);
+                }}
               >
                 Our Story
-              </a>
+              </button>
 
-              <a
-                href="#contact"
-                onClick={closeMenu}
+              <button
+                type="button"
+                onClick={() => {
+                  closeMenu();
+                  onNavigate("home");
+                  setTimeout(() => {
+                    document.getElementById("contact")?.scrollIntoView({
+                      behavior: "smooth",
+                    });
+                  }, 50);
+                }}
               >
                 Contact
-              </a>
+              </button>
 
               <div className="flex items-center justify-between pt-4">
                 <div className="relative">
@@ -238,7 +305,15 @@ export default function NavBar({ onNavigate = () => {} }) {
                 <Button
                   variant="accent"
                   size="sm"
-                  onClick={closeMenu}
+                  onClick={() => {
+                    closeMenu();
+                    onNavigate("home");
+                    setTimeout(() => {
+                      document.getElementById("shop")?.scrollIntoView({
+                        behavior: "smooth",
+                      });
+                    }, 50);
+                  }}
                 >
                   Order Now ☕
                 </Button>

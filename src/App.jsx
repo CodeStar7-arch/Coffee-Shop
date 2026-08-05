@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import RibbonTicker from "./components/RibbonTicker";
 import NavBar from "./components/NavBar";
 import HeroSection from "./components/HeroSection";
@@ -11,13 +11,39 @@ import ContactSection from "./components/ContactSection";
 import CartPage from "./components/CartPage";
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState("home");
+  const [currentPage, setCurrentPage] = useState(() =>
+    window.location.hash === "#/cart" ? "cart" : "home"
+  );
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      setCurrentPage(
+        window.location.hash === "#/cart" ? "cart" : "home"
+      );
+    };
+
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, []);
+
+  const navigateTo = (page) => {
+    if (page === "cart") {
+      window.location.hash = "#/cart";
+      setCurrentPage("cart");
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      return;
+    }
+
+    window.location.hash = "#/home";
+    setCurrentPage("home");
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  };
 
   if (currentPage === "cart") {
     return (
       <div className="app">
-        <NavBar onNavigate={setCurrentPage} />
-        <CartPage />
+        <NavBar onNavigate={navigateTo} />
+        <CartPage onNavigate={navigateTo} />
         <section className="bg-footer">
           <FooterSection />
         </section>
@@ -28,7 +54,7 @@ export default function App() {
   return (
     <div className="app">
       {/* NAVBAR */}
-      <NavBar onNavigate={setCurrentPage} />
+      <NavBar onNavigate={navigateTo} />
 
       {/* HERO */}
       <section className="hero bg-hero">

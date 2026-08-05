@@ -4,9 +4,7 @@ export default function AuthLogin() {
   const { isAuthenticated, login, logout, userId } = useAuth();
 
   const handleLogin = () => {
-    // Generate a user ID or use default
-    const id = prompt("Enter user ID (or leave blank for auto-generated):");
-    login(id || undefined);
+    login();
   };
 
   if (isAuthenticated) {

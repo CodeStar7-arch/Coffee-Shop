@@ -3,6 +3,14 @@ import prisma from "../prisma.js";
 
 const router = express.Router();
 
+async function ensureUserExists(userId) {
+  await prisma.user.upsert({
+    where: { id: userId },
+    update: {},
+    create: { id: userId },
+  });
+}
+
 // Get current user's cart
 router.get("/", async (req, res) => {
   const userId = req.user.id;
@@ -34,6 +42,8 @@ router.post("/add", async (req, res) => {
   if (!productId) return res.status(400).json({ error: "productId required" });
 
   try {
+    await ensureUserExists(userId);
+
     const product = await prisma.product.findUnique({ where: { id: Number(productId) } });
     if (!product) return res.status(404).json({ error: "Product not found" });
 

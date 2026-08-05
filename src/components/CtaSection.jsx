@@ -51,7 +51,18 @@ export default function CtaSection() {
  
             <ScrollReveal animation="fadeUp" delay={0.15}>
                 <div className="cta-buttons">
-                    <Button variant="accent" size="lg">
+                    <Button
+                      variant="accent"
+                      size="lg"
+                      onClick={() => {
+                        window.location.hash = "#/home";
+                        setTimeout(() => {
+                          document.getElementById("shop")?.scrollIntoView({
+                            behavior: "smooth",
+                          });
+                        }, 50);
+                      }}
+                    >
                         Order Now ☕
                     </Button>
                     <Button variant="ghost" size="lg">

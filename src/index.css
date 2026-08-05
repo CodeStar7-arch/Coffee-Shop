@@ -946,9 +946,13 @@ a {
     grid-template-columns: repeat(3, 1fr);
     gap: 28px;
     text-align: left;
+    align-items: stretch;
 }
 
 .product-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
     border-radius: var(--radius-xl);
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -998,6 +1002,10 @@ a {
 
 .product-card-info {
     padding: 20px 24px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
 }
 
 .product-card-header {
@@ -1031,9 +1039,9 @@ a {
     margin: 0 0 8px;
 }
 
-.product-notes {
+.product-note {
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--amber-light);
     line-height: 1.5;
     margin: 0;
 }
@@ -1055,6 +1063,7 @@ a {
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.08);
     margin-bottom: 24px;
+    z-index: 0;
 }
 
 /* Override Leaflet defaults to match theme */

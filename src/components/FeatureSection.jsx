@@ -16,61 +16,102 @@ const imgColombianSupremo = "/images/Colombian-Supremo-Bag.png";
 const imgEthiopianHarrar = "/images/Ethiopian-Harrar-Bag.png";
 const imgArabianMocha = "/images/Arabian-Mocha-Bag.png";
 
+const productImages = {
+  "Brazilian Santos": imgBrazilianSantos,
+  "Colombian Supremo": imgColombianSupremo,
+  "Ethiopian Harrar": imgEthiopianHarrar,
+  "Sumatra Mandheling": imgSumatraMandheling,
+  "Red Sulawesi": imgRedSulawesi,
+  "Urigacheffe": imgUrigacheffe,
+  "Tanzania Peaberry": imgTanzaniaPeaberry,
+  "Panama Geisha": imgPanamaGeisha,
+  "Vietnamese Robusta": imgVietnameseRobusta,
+  "Costa Rica Tarrazu": imgCostaRicaTarrazu,
+  "Guatemala Antigua": imgGuatemalaAntigua,
+  "Kenya AA": imgKenyaAA,
+  "Kona": imgKona,
+  "Jamaican Blue Mountain": imgJamaicanBlueMountain,
+  "Arabian Mocha": imgArabianMocha,
+};
+
 const row1 = [
-  imgJamaicanBlueMountain,
-  imgEthiopianHarrar,
-  imgGuatemalaAntigua,
-  imgTanzaniaPeaberry,
-  imgColombianSupremo,
-  imgVietnameseRobusta,
-  imgKona,
-  imgArabianMocha,
-  imgKenyaAA,
-  imgUrigacheffe,
-  imgSumatraMandheling,
-  imgPanamaGeisha,
-  imgRedSulawesi,
-  imgCostaRicaTarrazu,
-  imgBrazilianSantos,
+  "Jamaican Blue Mountain",
+  "Ethiopian Harrar",
+  "Guatemala Antigua",
+  "Tanzania Peaberry",
+  "Colombian Supremo",
+  "Vietnamese Robusta",
+  "Kona",
+  "Arabian Mocha",
+  "Kenya AA",
+  "Urigacheffe",
+  "Sumatra Mandheling",
+  "Panama Geisha",
+  "Red Sulawesi",
+  "Costa Rica Tarrazu",
+  "Brazilian Santos",
 ];
 
 const row2 = [
-  imgKenyaAA,
-  imgSumatraMandheling,
-  imgVietnameseRobusta,
-  imgArabianMocha,
-  imgPanamaGeisha,
-  imgGuatemalaAntigua,
-  imgJamaicanBlueMountain,
-  imgColombianSupremo,
-  imgUrigacheffe,
-  imgTanzaniaPeaberry,
-  imgEthiopianHarrar,
-  imgKona,
-  imgRedSulawesi,
-  imgBrazilianSantos,
-  imgCostaRicaTarrazu,
+  "Kenya AA",
+  "Sumatra Mandheling",
+  "Vietnamese Robusta",
+  "Arabian Mocha",
+  "Panama Geisha",
+  "Guatemala Antigua",
+  "Jamaican Blue Mountain",
+  "Colombian Supremo",
+  "Urigacheffe",
+  "Tanzania Peaberry",
+  "Ethiopian Harrar",
+  "Kona",
+  "Red Sulawesi",
+  "Brazilian Santos",
+  "Costa Rica Tarrazu",
 ];
 
 const row3 = [
-  imgGuatemalaAntigua,
-  imgJamaicanBlueMountain,
-  imgEthiopianHarrar,
-  imgKona,
-  imgUrigacheffe,
-  imgTanzaniaPeaberry,
-  imgKenyaAA,
-  imgColombianSupremo,
-  imgVietnameseRobusta,
-  imgSumatraMandheling,
-  imgPanamaGeisha,
-  imgArabianMocha,
-  imgRedSulawesi,
-  imgCostaRicaTarrazu,
-  imgBrazilianSantos,
+  "Guatemala Antigua",
+  "Jamaican Blue Mountain",
+  "Ethiopian Harrar",
+  "Kona",
+  "Urigacheffe",
+  "Tanzania Peaberry",
+  "Kenya AA",
+  "Colombian Supremo",
+  "Vietnamese Robusta",
+  "Sumatra Mandheling",
+  "Panama Geisha",
+  "Arabian Mocha",
+  "Red Sulawesi",
+  "Costa Rica Tarrazu",
+  "Brazilian Santos",
 ];
 
-function ImageRow({ images, offset = 0 }) {
+const slugify = (value) =>
+  `product-${value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "")}`;
+
+const scrollToProduct = (name) => {
+  const productId = slugify(name);
+  const target = document.getElementById(productId);
+  if (target) {
+    target.scrollIntoView({ behavior: "smooth", block: "center" });
+    return;
+  }
+
+  window.location.hash = "#/home";
+  setTimeout(() => {
+    document.getElementById(productId)?.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+    });
+  }, 150);
+};
+
+function ImageRow({ images, offset = 0, onItemClick }) {
   const doubled = [...images, ...images];
 
   return (
@@ -78,11 +119,23 @@ function ImageRow({ images, offset = 0 }) {
       className="carousel-row"
       style={{ transform: `translate3d(${offset}px, 0, 0)` }}
     >
-      {doubled.map((src, index) => (
-        <div className="carousel-card" key={index}>
+      {doubled.map((name, index) => (
+        <div
+          className="carousel-card"
+          key={`${name}-${index}`}
+          onClick={() => onItemClick(name)}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              onItemClick(name);
+            }
+          }}
+        >
           <img
-            src={src}
-            alt={`Coffee Bag ${(index % images.length) + 1}`}
+            src={productImages[name]}
+            alt={name}
             className="carousel-image"
             loading="lazy"
           />
@@ -130,9 +183,9 @@ export default function FeaturesSection() {
       ref={sectionRef}
     >
       <div className="carousel-gallery-container">
-        <ImageRow images={row1} offset={offsets[0]} />
-        <ImageRow images={row2} offset={offsets[1]} />
-        <ImageRow images={row3} offset={offsets[2]} />
+        <ImageRow images={row1} offset={offsets[0]} onItemClick={scrollToProduct} />
+        <ImageRow images={row2} offset={offsets[1]} onItemClick={scrollToProduct} />
+        <ImageRow images={row3} offset={offsets[2]} onItemClick={scrollToProduct} />
       </div>
     </section>
   );

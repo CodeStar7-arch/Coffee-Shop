@@ -70,38 +70,6 @@ export default function ProductShowcase() {
   };
 
 
-  useEffect(() => {
-    async function fetchProducts() {
-      try {
-        setLoading(true);
-        setError("");
-
-        const response = await fetch(
-          "http://localhost:5000/api/products"
-        );
-
-        if (!response.ok) {
-          throw new Error(
-            `Server returned ${response.status}`
-          );
-        }
-
-        const data = await response.json();
-
-        setProducts(data);
-      } catch (err) {
-        console.error(err);
-        setError(
-          "Unable to load our coffee selection. Please try again later."
-        );
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchProducts();
-  }, []);
-
   return (
     <section
       id="shop"
@@ -199,20 +167,27 @@ export default function ProductShowcase() {
             staggerDelay={0.1}
             className="product-grid"
           >
-            {products.map((product) => (
-              <StaggerItem
-                key={product.id}
-                animation="fadeUp"
-              >
-                <motion.div
-                  className="product"
-                  whileHover={{
-                    y: -8,
-                    transition: {
-                      duration: 0.25,
-                    },
-                  }}
+            {products.map((product) => {
+              const productId = `product-${product.name
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, "-")
+                .replace(/(^-|-$)/g, "")}`;
+
+              return (
+                <StaggerItem
+                  key={product.id}
+                  animation="fadeUp"
                 >
+                  <motion.div
+                    id={productId}
+                    className="product-card"
+                    whileHover={{
+                      y: -8,
+                      transition: {
+                        duration: 0.25,
+                      },
+                    }}
+                  >
                   <div className="product-card-image">
                     <img
                       src={product.image}
@@ -263,7 +238,8 @@ export default function ProductShowcase() {
                   </div>
                 </motion.div>
               </StaggerItem>
-            ))}
+              );
+            })}
           </StaggerContainer>
         )}
 

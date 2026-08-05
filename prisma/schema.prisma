@@ -22,6 +22,9 @@ model Product {
   category    String
   featured    Boolean  @default(false)
   createdAt   DateTime @default(now())
+
+  // Relation from products to cart items
+  cartItems   CartItem[]
 }
 
 // User model stores external/auth users by their external id (string)

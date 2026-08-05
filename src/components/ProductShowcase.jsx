@@ -1,151 +1,230 @@
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import ScrollReveal, { StaggerContainer, StaggerItem } from "./ui/ScrollReveal";
-import Badge from "./ui/Badge";
+
+import ScrollReveal, {
+  StaggerContainer,
+  StaggerItem,
+} from "./ui/ScrollReveal";
 import Button from "./ui/Button";
-import Seperator from "./ui/Separator";
-
-import imgEthiopianHarrar from "../assets/Ethiopian-Harrar-Bag.png";
-import imgColombianSupremo from "../assets/Colombian-Supremo-Bag.png";
-import imgKenyaAA from "../assets/Kenya-AA-Bag.png";
-import imgPanamaGeisha from "../assets/Panama-Geisha.png";
-import imgKona from "../assets/Kona-Bag.png";
-import imgGuatemalaAntigua from "../assets/Guatemala-Antigua-Bag.png";
-
-const products = [
-    {
-        name: "Ethiopian Harrar",
-        origin: "Ethiopia",
-        price: "$18.99",
-        roast: "Medium",
-        notes: "Blueberry, dark chocolate, wine",
-        image: imgEthiopianHarrar,
-        badge: "Best Seller"
-    },
-    {
-        name: "Colombian supremo",
-        origin: "Colombia",
-        price: "$16.99",
-        roast: "Medium-Dark",
-        notes: "Carmel, nutty, smooth finish",
-        image: imgColombianSupremo,
-        badge: null
-    },
-    {
-        name: "Kenya AA",
-        origin: "Kenya",
-        price: "$21.99",
-        roast: "Light",
-        notes: "Bright citrus, black currant, floral",
-        image: imgKenyaAA,
-        badge: "Staff Pick"
-    },
-    {
-        name: "Panama Geisha",
-        origin: "Panama",
-        price: "$34.99",
-        roast: "Light",
-        notes: "Jasmine, bergamot, tropical fruit",
-        image: imgPanamaGeisha,
-        badge: "Limited"
-    },
-    {
-        name: "Kona",
-        origin: "Hawaii",
-        price: "29.99",
-        roast: "Medium",
-        notes: "Brown sugar, macadamia, mild acidity",
-        image: imgKona,
-        badge: null
-    },
-    {
-        name: "Guatemala Antigua",
-        origin: "Guatemala",
-        price: "$17.99",
-        roast: "Dark",
-        notes: "Cocoa, spice, smoky sweetness",
-        image: imgGuatemalaAntigua,
-        badge: "New"
-    }
-];
+import Separator from "./ui/Separator";
+import { useCart } from "../context/CartContext";
 
 export default function ProductShowcase() {
-    return (
-        <div className="product-showcase">
-        <ScrollReveal animation="fadeUp" delay={0.1}>
-    <h2 className="product-showcase-title">
-        Shop Our
-        <br />
-        <span className="muted">Finest Beans</span>
+  const { addToCart } = useCart();
 
-    </h2>
-        </ScrollReveal>
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-        <ScrollReveal>
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        setLoading(true);
+        setError("");
 
-        </ScrollReveal>
+        const response = await fetch(
+          "http://localhost:5000/api/products"
+        );
 
-        <ScrollReveal animation="fadeUp" delay={0.15}>
-        <Seperator className="mx-auto mb-4 max-w-48" />
-        </ScrollReveal>
+        if (!response.ok) {
+          throw new Error(
+            `Server returned ${response.status}`
+          );
+        }
 
-        <ScrollReveal animation="fadeUp" delay={0.15}>
-         <p className="product-showcase-subtitle">
-            Hand-selected single-origin coffees, roasted to order. Each bag ships within 48 hours of roasting for maximum freshness.
+        const data = await response.json();
 
-         </p>
+        setProducts(data);
+      } catch (err) {
+        console.error(err);
+        setError(
+          "Unable to load our coffee selection. Please try again later."
+        );
+      } finally {
+        setLoading(false);
+      }
+    }
 
-        </ScrollReveal>
+    fetchProducts();
+  }, []);
 
-        <StaggerContainer staggerDelay={0.1} className="product-grid">
-        {products.map((product) => (
-            <StaggerItem key={product.name} animation="fadeUp">
-                <motion.div 
-                className="product"
-                whileHover={{ y: -8, transition: { duration: 0.25 } }}>
-                <div className="product-card-image">
-                <img src={product.image} alt={product.name} loading="lazy" />
-                {product.badge && (
-                    <span className="product-badge"></span>
-                )}
+  return (
+    <section
+      id="shop"
+      className="product-showcase"
+    >
+      <ScrollReveal animation="fadeUp" delay={0.1}>
+        <h2 className="product-showcase-title">
+          Shop Our
+          <br />
+          <span className="muted">
+            Finest Beans
+          </span>
+        </h2>
+      </ScrollReveal>
 
-                </div>
+      <ScrollReveal animation="fadeUp" delay={0.15}>
+        <Separator className="mx-auto mb-4 max-w-48" />
+      </ScrollReveal>
 
-                <div className="product-card-info">
-                <div className="product-card-header"> 
-                <h3>{product.name}</h3>
-                <span className="product-price">{product.price}</span>
+      <ScrollReveal animation="fadeUp" delay={0.15}>
+        <p className="product-showcase-subtitle">
+          Hand-selected single-origin coffees,
+          roasted to order. Every bag ships within
+          48 hours of roasting for maximum
+          freshness.
+        </p>
+      </ScrollReveal>
 
-                </div>
+      {/* Loading */}
 
-                <p className="product-origin">
-                {product.origin} . {product.roast} Roast
+      {loading && (
+        <div className="py-20 text-center">
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{
+              repeat: Infinity,
+              duration: 1,
+              ease: "linear",
+            }}
+            className="mx-auto mb-6 h-12 w-12 rounded-full border-4 border-[var(--amber)] border-t-transparent"
+          />
 
-                </p>
-                <p className="product-note">{product.notes}</p>
-                <Button variant="primary" size="sm" className="w-full mt-3">
-                Add to Cart
+          <p className="text-lg text-white/70">
+            Loading our freshest coffee beans...
+          </p>
+        </div>
+      )}
 
-                </Button>
+      {/* Error */}
 
-                </div>
-                
+      {!loading && error && (
+        <div className="py-20 text-center">
+          <h3 className="mb-3 text-2xl font-bold text-red-400">
+            Oops!
+          </h3>
+
+          <p className="text-white/70">
+            {error}
+          </p>
+
+          <Button
+            className="mt-6"
+            onClick={() =>
+              window.location.reload()
+            }
+          >
+            Try Again
+          </Button>
+        </div>
+      )}
+
+      {/* Empty State */}
+
+      {!loading &&
+        !error &&
+        products.length === 0 && (
+          <div className="py-20 text-center">
+            <h3 className="mb-3 text-2xl font-bold">
+              No Coffee Available
+            </h3>
+
+            <p className="text-white/70">
+              We're roasting a fresh batch.
+              Check back soon!
+            </p>
+          </div>
+        )}
+
+      {/* Products */}
+
+      {!loading &&
+        !error &&
+        products.length > 0 && (
+          <StaggerContainer
+            staggerDelay={0.1}
+            className="product-grid"
+          >
+            {products.map((product) => (
+              <StaggerItem
+                key={product.id}
+                animation="fadeUp"
+              >
+                <motion.div
+                  className="product"
+                  whileHover={{
+                    y: -8,
+                    transition: {
+                      duration: 0.25,
+                    },
+                  }}
+                >
+                  <div className="product-card-image">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      loading="lazy"
+                    />
+
+                    {product.featured && (
+                      <span className="product-badge">
+                        Featured
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="product-card-info">
+                    <div className="product-card-header">
+                      <h3>
+                        {product.name}
+                      </h3>
+
+                      <span className="product-price">
+                        $
+                        {Number(
+                          product.price
+                        ).toFixed(2)}
+                      </span>
+                    </div>
+
+                    <p className="product-origin">
+                      {product.category}
+                    </p>
+
+                    <p className="product-note">
+                      {product.description}
+                    </p>
+
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      className="w-full mt-3"
+                      onClick={() =>
+                        addToCart(product)
+                      }
+                    >
+                      Add to Cart
+                    </Button>
+                  </div>
                 </motion.div>
-            </StaggerItem>
-        ))}
+              </StaggerItem>
+            ))}
+          </StaggerContainer>
+        )}
 
-        </StaggerContainer>
-
-        <ScrollReveal animation="fadeUp" delay={0.2}>
+      <ScrollReveal
+        animation="fadeUp"
+        delay={0.2}
+      >
         <div className="product-showcase-cta">
-        <Button variant="accent" size="lg">
-        View All Coffee →
-
-        </Button>
-
+          <Button
+            variant="accent"
+            size="lg"
+          >
+            View All Coffee →
+          </Button>
         </div>
-
-        </ScrollReveal>
-
-        </div>
-    );
+      </ScrollReveal>
+    </section>
+  );
 }

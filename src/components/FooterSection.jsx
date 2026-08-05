@@ -4,7 +4,7 @@ import "leaflet/dist/leaflet.css";
 import ContactForm from "./ContactForm";
 import Separator from "./ui/Separator";
 import ScrollReveal from "./ui/ScrollReveal";
-import logo from "../assets/Beans_logo.png";
+const logo = "/images/Beans_logo.png";
  
 const navigation = {
     shop: [

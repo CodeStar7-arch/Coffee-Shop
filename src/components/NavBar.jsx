@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FaShoppingCart } from "react-icons/fa";
 
 import Button from "./ui/Button";
+import AuthLogin from "./AuthLogin";
 import { useCart } from "../context/CartContext";
 
 const logo = "/images/Beans_logo.png";
@@ -66,6 +67,9 @@ export default function NavBar() {
         {/* Desktop Right Side */}
 
         <div className="hidden items-center gap-5 md:flex">
+          {/* Auth Login */}
+          <AuthLogin />
+
           {/* Shopping Cart */}
 
           <button

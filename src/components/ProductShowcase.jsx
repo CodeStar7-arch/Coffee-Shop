@@ -8,13 +8,67 @@ import ScrollReveal, {
 import Button from "./ui/Button";
 import Separator from "./ui/Separator";
 import { useCart } from "../context/CartContext";
+import { useAuth } from "../context/AuthContext";
 
 export default function ProductShowcase() {
-  const { addToCart } = useCart();
+  const { addToCart, loading: cartLoading } = useCart();
+  const { isAuthenticated } = useAuth();
 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [addingId, setAddingId] = useState(null);
+
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        setLoading(true);
+        setError("");
+
+        const response = await fetch(
+          "http://localhost:5000/api/products"
+        );
+
+        if (!response.ok) {
+          throw new Error(
+            `Server returned ${response.status}`
+          );
+        }
+
+        const data = await response.json();
+
+        setProducts(data);
+      } catch (err) {
+        console.error(err);
+        setError(
+          "Unable to load our coffee selection. Please try again later."
+        );
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchProducts();
+  }, []);
+
+  const handleAddToCart = async (product) => {
+    if (!isAuthenticated) {
+      alert("Please login first to add items to cart");
+      return;
+    }
+
+    setAddingId(product.id);
+    try {
+      await addToCart(product);
+      alert("Added to cart!");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to add to cart");
+    } finally {
+      setAddingId(null);
+    }
+  };
+
 
   useEffect(() => {
     async function fetchProducts() {
@@ -200,10 +254,11 @@ export default function ProductShowcase() {
                       size="sm"
                       className="w-full mt-3"
                       onClick={() =>
-                        addToCart(product)
+                        handleAddToCart(product)
                       }
+                      disabled={addingId === product.id || cartLoading}
                     >
-                      Add to Cart
+                      {addingId === product.id ? "Adding..." : "Add to Cart"}
                     </Button>
                   </div>
                 </motion.div>

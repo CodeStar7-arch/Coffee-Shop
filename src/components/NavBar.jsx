@@ -8,7 +8,7 @@ import { useCart } from "../context/CartContext";
 
 const logo = "/images/Beans_logo.png";
 
-export default function NavBar() {
+export default function NavBar({ onNavigate = () => {} }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -28,6 +28,10 @@ export default function NavBar() {
     return () =>
       window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const handleCartClick = () => {
+    onNavigate("cart");
+  };
 
   return (
     <motion.header
@@ -73,6 +77,7 @@ export default function NavBar() {
           {/* Shopping Cart */}
 
           <button
+            onClick={handleCartClick}
             className="relative transition-transform hover:scale-110"
             aria-label="Shopping Cart"
           >

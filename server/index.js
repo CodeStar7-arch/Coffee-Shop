@@ -3,6 +3,7 @@ import cors from "cors";
 import prisma from "./prisma.js";
 import auth from "./middleware/auth.js";
 import cartRouter from "./routes/cart.js";
+import orderRouter from "./routes/order.js";
 
 const app = express();
 
@@ -34,6 +35,9 @@ app.get("/api/products", async (req, res) => {
 
 // Mount cart routes (requires JWT auth)
 app.use("/api/cart", auth, cartRouter);
+
+// Mount order routes (requires JWT auth)
+app.use("/api/orders", auth, orderRouter);
 
 // Start Server
 const PORT = 5000;

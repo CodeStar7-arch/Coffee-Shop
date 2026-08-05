@@ -25,7 +25,7 @@ export default function ProductShowcase() {
         setLoading(true);
         setError("");
 
-        const apiBase = import.meta.env.VITE_API_BASE || "http://localhost:5000/api";
+        const apiBase = import.meta.env.VITE_API_BASE || "/api";
         const response = await fetch(`${apiBase}/products`);
 
         if (!response.ok) {

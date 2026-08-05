@@ -1,4 +1,4 @@
-import { useAuth } from "./AuthContext";
+import { useAuth } from "../context/AuthContext";
 
 const API_BASE = "http://localhost:5000/api";
 

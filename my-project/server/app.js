@@ -18,6 +18,14 @@ app.get("/", (req, res) => {
   });
 });
 
+// Serverless Health Check
+app.get("/api/health", (req, res) => {
+  res.json({
+    status: "ok",
+    message: "Coffee Shop serverless API is working!",
+  });
+});
+
 // Get All Products
 app.get("/api/products", async (req, res) => {
   try {

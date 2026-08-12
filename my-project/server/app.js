@@ -19,15 +19,26 @@ app.get("/", (req, res) => {
 });
 
 // Get All Products
-app.get("/api/products", (req, res) => {
-  console.log("API route reached!");
-  res.json([
-    {
-      id: 1,
-      name: "Test Coffee",
-      price: 9.99
-    }
-  ]);
+app.get("/api/products", async (req, res) => {
+  try {
+    console.log("Fetching products from database...");
+
+    const products = await prisma.product.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    console.log(`Found ${products.length} products`);
+
+    res.status(200).json(products);
+  } catch (error) {
+    console.error("Error fetching products:", error);
+
+    res.status(500).json({
+      error: "Failed to fetch products",
+    });
+  }
 });
 
 // Mount cart routes (requires JWT auth)
